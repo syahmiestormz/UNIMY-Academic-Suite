@@ -380,7 +380,10 @@ elif role == "🎓 Dean (Programme)":
                     d.update(r['PLO_Data'])
                     flat_data.append(d)
                 
-                st.dataframe(pd.DataFrame(flat_data).style.format("{:.1f}"), use_container_width=True)
+                df_student_hist = pd.DataFrame(flat_data)
+                # Apply formatting only to numeric PLO columns
+                plo_cols = [c for c in df_student_hist.columns if "PLO" in c]
+                st.dataframe(df_student_hist.style.format("{:.1f}", subset=plo_cols), use_container_width=True)
                 
             with t3:
                 st.subheader("📄 Programme ESPAR Generator")
