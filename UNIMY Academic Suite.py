@@ -193,12 +193,25 @@ def process_dean_files(uploaded_files):
         try:
             xls = pd.read_excel(f, sheet_name=None)
             
-            # Read Info
+            # Read Info from Setup sheet
+            course_code = "Unknown"
+            course_name = "Unknown"
+            
             if 'Setup' in xls:
                 info_df = xls['Setup']
-                course_code = info_df['code'].iloc[0] if 'code' in info_df.columns else "Unknown"
-                course_name = info_df['name'].iloc[0] if 'name' in info_df.columns else "Unknown"
-            else: continue
+                # Check if columns are 'code'/'name' or different based on generation
+                if 'code' in info_df.columns:
+                    course_code = info_df['code'].iloc[0]
+                elif 'Course Code' in info_df.columns: # Alternative check
+                     course_code = info_df['Course Code'].iloc[0]
+                     
+                if 'name' in info_df.columns:
+                    course_name = info_df['name'].iloc[0]
+                elif 'Course Name' in info_df.columns: # Alternative check
+                    course_name = info_df['Course Name'].iloc[0]
+            else: 
+                # Fallback if no Setup sheet (unlikely for processed files)
+                course_code = f.name
             
             # Read Marks & PLO Data
             if 'Table 1 - Marks' in xls and 'Table 2 - CLO Analysis' in xls:
@@ -376,7 +389,7 @@ elif role == "🎓 Dean (Programme)":
                 
                 flat_data = []
                 for _, r in s_data.iterrows():
-                    d = {'Course': r['Course Code']}
+                    d = {'Course': r['Course Code'], 'Course Name': r['Course Name']} # Added Course Name here
                     d.update(r['PLO_Data'])
                     flat_data.append(d)
                 
