@@ -1,1 +1,6 @@
-streamlit, pandas, matplotlib, numpy, openpyxl
+streamlit
+pandas
+matplotlib
+numpy
+openpyxl
+xlsxwriter
